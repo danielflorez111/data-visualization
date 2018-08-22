@@ -28,75 +28,38 @@
 
 	<div class="reveal">
 		<div class="slides">
-
-			<div class="scrollable scrollable-demo">
-				<svg width=400 height=400>
-					<circle cx=200 cy=200 r=20 style="fill:steelblue"></circle>
-				</svg>
-			</div>
-
 			<section>
 				<section>
-					<h1>No Scrolling</h1>
+					<h1>Hello</h1>
 				</section>
-				<section class="scroll" scrollable="demo" step="step 0">
-					<h2>Step 0 text</h2>
+				<section data-state="slide1">
+					<h2>Slide 1</h2>
+					<div id="slide1container"></div>
 				</section>
-				<section class="scroll" scrollable="demo" step="step 1">
-					<h2>Step 1 text</h2>
+				<section data-state="slide2">
+					<h2>Slide 2</h2>
+					<div id="slide2container"></div>
 				</section>
-				<section>
-					<h2>No scrolling again</h2>
+				<section data-state="slide3">
+					<h2>Slide 3</h2>
+					<div id="slide3container"></div>
 				</section>
 			</section>
-
 		</div>
 	</div>
 
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
 	<script src="js/d3.v4.min.js"></script>
-
-	<script>
-		function moveLeft(ele) {
-			d3.select(ele)
-				.select("circle")
-				.transition()
-				.duration(1000)
-				.attr("cx", 100);
-		}
-
-		function moveRight(ele) {
-			d3.select(ele)
-				.select("circle")
-				.transition()
-				.duration(1000)
-				.attr("cx", 300);
-		}
-
-		function doStep(step) {
-			if (step === "step 0") moveLeft(this);
-			else if (step === "step 1") moveRight(this);
-		}
-
-	</script>
+	<script src="js/functions.js"></script>
 
 	<script>
 		Reveal.initialize({
 			controls: false,
 			mouseWheel: true,
-			dependencies: [
-				{
-					src: "js/revealVizScroll.js",
-					async: false,
-					callback: function () {
-						revealVizScroll.makeScrollable("demo", doStep);
-					}
-				}
-			],
-
 		});
 	</script>
+	
 </body>
 
 </html>
