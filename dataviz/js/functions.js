@@ -12,7 +12,7 @@ Reveal.addEventListener('slide1', () => {
         .append("circle")
         .attr("cx", 100)
         .attr("cy", 100)
-        .attr("r", 100)
+        .attr("r", 30)
         .style("fill", "purple");
 });
 
@@ -26,7 +26,7 @@ Reveal.addEventListener('slide2', () => {
         .append("circle")
         .attr("cx", 100)
         .attr("cy", 100)
-        .attr("r", 100)
+        .attr("r", 30)
         .style("fill", "red");
 });
 
