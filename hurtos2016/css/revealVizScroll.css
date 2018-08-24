@@ -1,6 +1,7 @@
 .reveal .slides .scrollable {
   display: none;
-  width: 61.8%;
+  width: 55%;
+  margin-left: 20px;
 }
 .reveal .slides>section {
   width: 100%;
@@ -10,4 +11,10 @@
 }
 .reveal.scrolling .slides .scrollable {
   float: right;
+}
+.scroll {
+  top: 40px !important;
+}
+.explain {
+  font-size: 30px !important;
 }

@@ -1,3 +1,5 @@
+var hola = 'hola';
+
 function cleanCanvas(element) {
     d3.select(element).html(null);
 }
@@ -18,6 +20,7 @@ function createBubleChart(element) {
 }
 
 function bubleChart(data, element) {
+    console.log(hola+'1')
     dataset = {
         "children": data
     };
@@ -39,7 +42,7 @@ function bubleChart(data, element) {
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) {
-            return d.Poblacion;
+            return d.Conteo;
         });
 
     var node = svg.selectAll(".node")
@@ -107,13 +110,17 @@ function bubleChart(data, element) {
         //prueba(svg);
 }
 
+function createBubleChartIntensity(element){
+    console.log(hola+'2');
+}
+
 function doStep(step) {
     switch (step) {
         case '1':
             createBubleChart(this);
             break;
-        case 'blue':
-            createCircleBlue(this);
+        case '2':
+            createBubleChartIntensity(this);
             break;
         default:
             break;
