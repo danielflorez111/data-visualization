@@ -35,7 +35,23 @@ function bubleChart(data, element) {
         .attr("height", diameter)
         .attr("class", "bubble");
 
-    var tooltip = svg.append("text");
+    // var tooltip = d3.select("body")
+    //     .append("div")
+    //     .style("position", "absolute")
+    //     .style("z-index", "10")
+    //     .style("visibility", "hidden");
+    // // .text("a simple tooltip");
+
+    var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("color", "white")
+        .style("padding", "8px")
+        .style("background-color", "rgba(0, 0, 0, 0.75)")
+        .style("border-radius", "6px")
+        .style("font", "12px sans-serif")
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) {
@@ -69,6 +85,23 @@ function bubleChart(data, element) {
             } else {
                 return 'red'
             }
+        })
+        .style('pointer-events', 'all');
+
+
+    node.selectAll('circle')
+        .on("mouseover", function (d) {
+            console.log(d);
+            tooltip.text(d.data.Conteo);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            console.log('mouse move');
+            return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            console.log('mouse out');
+            return tooltip.style("visibility", "hidden");
         });
 
     // .on("mouseover", (d) => {
