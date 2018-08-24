@@ -1,26 +1,15 @@
-var hola = 'hola';
+let promise_deptos = new Promise((resolve, reject) => {
+    d3.csv("/data/departamentos.csv", function (data) {
+        resolve(data);
+    });
+});
 
 function cleanCanvas(element) {
     d3.select(element).html(null);
 }
 
-function createBubleChart(element) {
+function createBubleChart(data, element) {
     cleanCanvas(element);
-
-    let promise = new Promise((resolve, reject) => {
-        d3.csv("/data/departamentos.csv", function (data) {
-            var dataset = data;
-            resolve(dataset);
-        });
-    });
-
-    promise.then((dataset) => {
-        bubleChart(dataset, element);
-    });
-}
-
-function bubleChart(data, element) {
-    console.log(hola+'1')
     dataset = {
         "children": data
     };
@@ -36,7 +25,8 @@ function bubleChart(data, element) {
         .append("svg")
         .attr("width", diameter)
         .attr("height", diameter)
-        .attr("class", "bubble");
+        .attr("class", "bubble")
+        .attr("class", "deptos");
 
     // var tooltip = d3.select("body")
     //     .append("div")
@@ -58,7 +48,7 @@ function bubleChart(data, element) {
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) {
-            return d.Conteo;
+            return d.Poblacion;
         });
 
     var node = svg.selectAll(".node")
@@ -83,27 +73,20 @@ function bubleChart(data, element) {
             return d.r;
         })
         .style("fill", function (d, i) {
-            if (d.data.Proporcion <= 0.25) {
-                return 'green';
-            } else {
-                return 'red'
-            }
+            return color(i);
         })
         .style('pointer-events', 'all');
 
 
     node.selectAll('circle')
         .on("mouseover", function (d) {
-            console.log(d);
             tooltip.text(d.data.Conteo);
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
-            console.log('mouse move');
             return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
         })
         .on("mouseout", function () {
-            console.log('mouse out');
             return tooltip.style("visibility", "hidden");
         });
 
@@ -147,17 +130,31 @@ function bubleChart(data, element) {
     //prueba(svg);
 }
 
-function createBubleChartIntensity(element){
-    console.log(hola+'2');
+function createBubleChartIntensity(data, element){
+    var svg = d3.select(".deptos");
+    var nodes = svg.selectAll(".node");
+
+    nodes.style("fill", function (d, i) {
+        console.log(d);
+        if (d.data.Proporcion <= 0.25) {
+            return 'green';
+        } else {
+            return 'red'
+        }
+    })
 }
 
 function doStep(step) {
     switch (step) {
         case '1':
-            createBubleChart(this);
+            promise_deptos.then((dataset) => {
+                createBubleChart(dataset, this);
+            });
             break;
         case '2':
-            createBubleChartIntensity(this);
+            promise_deptos.then((dataset) => {
+                createBubleChartIntensity(dataset, this);
+            });
             break;
         default:
             break;
