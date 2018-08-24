@@ -64,18 +64,22 @@ function bubleChart(data, element) {
             return d.r;
         })
         .style("fill", function (d, i) {
-            return color(i);
+            if (d.data.Proporcion <= 0.25) {
+                return 'green';
+            } else {
+                return 'red'
+            }
         });
 
-        // .on("mouseover", (d) => {
-        //     tooltip.text(d.Conteo)
-        //         .transition()
-        //         .duration(1000)
-        //         .attr("x", d.x)
-        //         .attr("y", d.y - 20);        
-            
-        //     console.log("clicked!", d);
-        //   });
+    // .on("mouseover", (d) => {
+    //     tooltip.text(d.Conteo)
+    //         .transition()
+    //         .duration(1000)
+    //         .attr("x", d.x)
+    //         .attr("y", d.y - 20);        
+
+    //     console.log("clicked!", d);
+    //   });
 
     node.append("text")
         .attr("dy", ".2em")
@@ -104,7 +108,7 @@ function bubleChart(data, element) {
     d3.select(self.frameElement)
         .style("height", diameter + "px");
 
-        //prueba(svg);
+    //prueba(svg);
 }
 
 function doStep(step) {
