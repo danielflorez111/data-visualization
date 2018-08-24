@@ -13,6 +13,11 @@ function createCircleRed(ele) {
         .attr("cy", 200)
         .attr("r", 20)
         .style("fill", "red");
+
+
+    d3.csv("/data/departamentos.csv", function (data) {
+        console.log(data);
+    });
 }
 
 function createCircleBlue(ele) {
