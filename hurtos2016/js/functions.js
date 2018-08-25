@@ -134,7 +134,7 @@ function createBubleChartIntensity(data, element) {
         .style("padding", "8px")
         .style("background-color", "rgba(0, 0, 0, 0.75)")
         .style("border-radius", "6px")
-        .style("font", "14px sans-serif")
+        .style("font", "14px sans-serif");
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) {
@@ -205,24 +205,34 @@ function createScatterPlot(data, element) {
     console.log(data);
     cleanCanvas(element);
 
-    let diameter = 600,
+    let diameter = 650,
         svg = d3.select(element)
-                .append("svg")
-                .attr("width", diameter)
-                .attr("height", diameter),
+            .append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter),
         margin = { top: 20, right: 20, bottom: 30, left: 50 },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom,
         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        color = d3.scaleOrdinal(d3.schemeCategory20);
+    color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("color", "white")
+        .style("padding", "8px")
+        .style("background-color", "rgba(0, 0, 0, 0.75)")
+        .style("border-radius", "6px")
+        .style("font", "14px sans-serif");
 
     g.append("g")
-        .attr("class", "x axis")
-        .style("color", "white");
+        .attr("class", "x axis");
 
     g.append("g")
-        .attr("class", "y axis")
-        .style("color", "white");
+        .attr("class", "y axis");
 
     let x = d3.scaleLinear()
         .range([0, width]);
@@ -230,8 +240,8 @@ function createScatterPlot(data, element) {
     let y = d3.scaleLinear()
         .range([height, 0]);
 
-    x.domain([0, d3.max(data, d => d.Poblacion)]);
-    y.domain([0, d3.max(data, d => d.Conteo)]);
+    x.domain([0, 11000000]);
+    y.domain([0, 44000]);
 
     let points = g.selectAll(".point")
         .data(data); //update
@@ -243,14 +253,27 @@ function createScatterPlot(data, element) {
         .append("circle")
         .attr("class", "point")
         .style("fill", function (d, i) {
-            console.log(d);
             return color(i);
+        })
+        .style('pointer-events', 'all')
+        .style('cursor', 'pointer');
+
+    d3.selectAll('circle')
+        .on("mouseover", function (d) {
+            tooltip.text(`${d.Departamento}: ${d.Conteo}`);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            return tooltip.style("visibility", "hidden");
         });
 
     points.merge(pointsEnter) //Enter + Update
         .attr("cx", d => x(d.Poblacion))
         .attr("cy", d => y(d.Conteo))
-        .attr("r", 3.5);
+        .attr("r", 5);
 
     points.exit()
         .remove();

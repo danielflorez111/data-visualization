@@ -1,0 +1,18 @@
+.x.axis line {
+    stroke: white;
+}
+.x.axis path {
+    stroke: white;
+}
+.x.axis text {
+    fill: white;
+}
+.y.axis line {
+    stroke: white;
+}
+.y.axis path {
+    stroke: white;
+}
+.y.axis text {
+    fill: white;
+}
