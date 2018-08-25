@@ -1,5 +1,8 @@
+var dataset_deptos;
+
 let promise_deptos = new Promise((resolve, reject) => {
     d3.csv("/data/departamentos.csv", function (data) {
+        dataset_deptos = data;
         resolve(data);
     });
 });
@@ -101,14 +104,6 @@ function createBubleChart(data, element) {
 }
 
 function createBubleChartIntensity(data, element) {
-    // var svg = d3.select(".deptos");
-    // var nodes = svg.selectAll(".node");
-
-    // nodes.selectAll('circle')
-    //     .style("fill", function (d, i) {
-
-    //     });
-
     cleanCanvas(element);
     dataset = {
         "children": data
@@ -204,6 +199,69 @@ function createBubleChartIntensity(data, element) {
         .style("height", diameter + "px");
 }
 
+function createScatterPlot(data, element) {
+    console.log(data);
+    cleanCanvas(element);
+
+    let diameter = 600,
+        svg = d3.select(element)
+                .append("svg")
+                .attr("width", diameter)
+                .attr("height", diameter),
+        margin = { top: 20, right: 20, bottom: 30, left: 50 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    g.append("g")
+        .attr("class", "x axis")
+        .style("color", "white");
+
+    g.append("g")
+        .attr("class", "y axis")
+        .style("color", "white");
+
+    let x = d3.scaleLinear()
+        .range([0, width]);
+
+    let y = d3.scaleLinear()
+        .range([height, 0]);
+
+    x.domain([0, d3.max(data, d => d.Poblacion)]);
+    y.domain([0, d3.max(data, d => d.Conteo)]);
+
+    let points = g.selectAll(".point")
+        .data(data); //update
+
+    console.log(points);
+
+    pointsEnter = points
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .style("fill", function (d, i) {
+            console.log(d);
+            return color(i);
+        });
+
+    points.merge(pointsEnter) //Enter + Update
+        .attr("cx", d => x(d.Poblacion))
+        .attr("cy", d => y(d.Conteo))
+        .attr("r", 3.5);
+
+    points.exit()
+        .remove();
+
+    g.select(".x.axis")
+        .call(d3.axisBottom(x))
+        .attr("transform",
+            "translate(0, " + height + ")");
+
+    g.select(".y.axis")
+        .call(d3.axisLeft(y));
+}
+
 function doStep(step) {
     switch (step) {
         case '1':
@@ -212,9 +270,10 @@ function doStep(step) {
             });
             break;
         case '2':
-            promise_deptos.then((dataset) => {
-                createBubleChartIntensity(dataset, this);
-            });
+            createBubleChartIntensity(dataset_deptos, this);
+            break;
+        case '3':
+            createScatterPlot(dataset_deptos, this);
             break;
         default:
             break;
