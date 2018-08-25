@@ -28,13 +28,6 @@ function createBubleChart(data, element) {
         .attr("class", "bubble")
         .attr("class", "deptos");
 
-    // var tooltip = d3.select("body")
-    //     .append("div")
-    //     .style("position", "absolute")
-    //     .style("z-index", "10")
-    //     .style("visibility", "hidden");
-    // // .text("a simple tooltip");
-
     var tooltip = d3.select("body")
         .append("div")
         .style("position", "absolute")
@@ -44,7 +37,7 @@ function createBubleChart(data, element) {
         .style("padding", "8px")
         .style("background-color", "rgba(0, 0, 0, 0.75)")
         .style("border-radius", "6px")
-        .style("font", "12px sans-serif")
+        .style("font", "14px sans-serif")
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) {
@@ -75,12 +68,13 @@ function createBubleChart(data, element) {
         .style("fill", function (d, i) {
             return color(i);
         })
-        .style('pointer-events', 'all');
+        .style('pointer-events', 'all')
+        .style('cursor', 'pointer');
 
 
     node.selectAll('circle')
         .on("mouseover", function (d) {
-            tooltip.text(d.data.Conteo);
+            tooltip.text(`Hurtos: ${d.data.Conteo}`);
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
@@ -89,16 +83,6 @@ function createBubleChart(data, element) {
         .on("mouseout", function () {
             return tooltip.style("visibility", "hidden");
         });
-
-    // .on("mouseover", (d) => {
-    //     tooltip.text(d.Conteo)
-    //         .transition()
-    //         .duration(1000)
-    //         .attr("x", d.x)
-    //         .attr("y", d.y - 20);        
-
-    //     console.log("clicked!", d);
-    //   });
 
     node.append("text")
         .attr("dy", ".2em")
@@ -112,36 +96,22 @@ function createBubleChart(data, element) {
         })
         .attr("fill", "white");
 
-    // node.append("text")
-    //     .attr("dy", "1.3em")
-    //     .style("text-anchor", "middle")
-    //     .text(function (d) {
-    //         return d.data.Conteo;
-    //     })
-    //     .attr("font-family", "Gill Sans", "Gill Sans MT")
-    //     .attr("font-size", function (d) {
-    //         return d.r / 5;
-    //     })
-    //     .attr("fill", "white");
-
     d3.select(self.frameElement)
         .style("height", diameter + "px");
-
-    //prueba(svg);
 }
 
-function createBubleChartIntensity(data, element){
+function createBubleChartIntensity(data, element) {
     var svg = d3.select(".deptos");
     var nodes = svg.selectAll(".node");
 
-    nodes.style("fill", function (d, i) {
-        console.log(d);
-        if (d.data.Proporcion <= 0.25) {
-            return 'green';
-        } else {
-            return 'red'
-        }
-    })
+    nodes.selectAll('circle')
+        .style("fill", function (d, i) {
+            if (d.data.Proporcion <= 0.25) {
+                return 'green';
+            } else {
+                return 'red'
+            }
+        });
 }
 
 function doStep(step) {
@@ -160,6 +130,3 @@ function doStep(step) {
             break;
     }
 }
-
-
-
