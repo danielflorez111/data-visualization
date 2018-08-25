@@ -33,6 +33,7 @@ function createBubleChart(data, element) {
 
     var tooltip = d3.select("body")
         .append("div")
+        .attr("class", "tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")
@@ -125,6 +126,7 @@ function createBubleChartIntensity(data, element) {
 
     var tooltip = d3.select("body")
         .append("div")
+        .attr("class", "tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")
@@ -263,6 +265,7 @@ function createScatterPlot(data, element) {
 }
 
 function doStep(step) {
+    d3.selectAll('.tooltip').remove();
     switch (step) {
         case '1':
             promise_deptos.then((dataset) => {
