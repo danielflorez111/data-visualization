@@ -1,3 +1,6 @@
+.explain {
+    font-size: 30px !important;
+  }
 .x.axis line {
     stroke: white;
 }
@@ -16,3 +19,9 @@
 .y.axis text {
     fill: white;
 }
+.bar {
+    fill: steelblue;
+}  
+.bar:hover {
+    fill: gray;
+} 

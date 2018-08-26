@@ -7,6 +7,15 @@ let promise_deptos = new Promise((resolve, reject) => {
     });
 });
 
+var dataset_transport;
+
+let promise_transport = new Promise((resolve, reject) => {
+    d3.csv("/data/transport.csv", function (data) {
+        dataset_transport = data;
+        resolve(data);
+    });
+});
+
 function cleanCanvas(element) {
     d3.select(element).html(null);
 }
@@ -111,7 +120,6 @@ function createBubleChartIntensity(data, element) {
     };
 
     var diameter = 600;
-    var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
@@ -202,14 +210,13 @@ function createBubleChartIntensity(data, element) {
 }
 
 function createScatterPlot(data, element) {
-    console.log(data);
     cleanCanvas(element);
 
-    let diameter = 650,
+    let length = 650,
         svg = d3.select(element)
             .append("svg")
-            .attr("width", diameter)
-            .attr("height", diameter),
+            .attr("width", length)
+            .attr("height", length),
         margin = { top: 20, right: 20, bottom: 30, left: 50 },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom,
@@ -245,8 +252,6 @@ function createScatterPlot(data, element) {
 
     let points = g.selectAll(".point")
         .data(data); //update
-
-    console.log(points);
 
     pointsEnter = points
         .enter()
@@ -287,6 +292,52 @@ function createScatterPlot(data, element) {
         .call(d3.axisLeft(y));
 }
 
+function createBarChart(data, element) {
+    cleanCanvas(element);
+
+    let length = 650,
+        svg = d3.select(element)
+            .append("svg")
+            .attr("width", length)
+            .attr("height", length),
+        margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+        y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(data.map(function (d) { return d.Movil_agresor; }));
+    y.domain([0, d3.max(data, function (d) { return d.Conteo; })]);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(100))
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Frequency");
+
+    g.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) { return x(d.Movil_agresor); })
+        .attr("y", function (d) { return y(d.Conteo); })
+        .attr("width", x.bandwidth())
+        .attr("height", function (d) { return height - y(d.Conteo); });
+}
+
 function doStep(step) {
     d3.selectAll('.tooltip').remove();
     switch (step) {
@@ -300,6 +351,11 @@ function doStep(step) {
             break;
         case '3':
             createScatterPlot(dataset_deptos, this);
+            break;
+        case '4':
+            promise_transport.then((dataset) => {
+                createBarChart(dataset, this);
+            });
             break;
         default:
             break;
