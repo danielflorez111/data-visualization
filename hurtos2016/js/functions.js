@@ -470,13 +470,13 @@ function doStep(step) {
             createScatterPlot(dataset_deptos, this);
             break;
         case '4':
-            promise_transport.then((dataset) => {
-                createBarChart(dataset, this);
+            promise_weapon.then((dataset) => {
+                createDonutChart(dataset, this);
             });
             break;
         case '5':
-            promise_weapon.then((dataset) => {
-                createDonutChart(dataset, this);
+            promise_transport.then((dataset) => {
+                createBarChart(dataset, this);
             });
             break;
         default:
