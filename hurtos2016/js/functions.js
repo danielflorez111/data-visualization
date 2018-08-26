@@ -1,7 +1,7 @@
 var dataset_deptos;
 
 let promise_deptos = new Promise((resolve, reject) => {
-    d3.csv("/data/departamentos.csv", function (data) {
+    d3.csv("data/departamentos.csv", function (data) {
         dataset_deptos = data;
         resolve(data);
     });
@@ -10,7 +10,7 @@ let promise_deptos = new Promise((resolve, reject) => {
 var dataset_transport;
 
 let promise_transport = new Promise((resolve, reject) => {
-    d3.csv("/data/transport.csv", function (data) {
+    d3.csv("data/transport.csv", function (data) {
         dataset_transport = data;
         resolve(data);
     });
