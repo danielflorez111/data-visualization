@@ -382,7 +382,19 @@ function createBarChart(data, element) {
 function createDonutChart(data, element) {
     cleanCanvas(element);
 
-    let diameter = 650,
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("color", "white")
+        .style("padding", "8px")
+        .style("background-color", "rgba(0, 0, 0, 0.75)")
+        .style("border-radius", "6px")
+        .style("font", "14px sans-serif");
+
+    let diameter = 600,
         svg = d3.select(element)
             .append("svg")
             .attr("width", diameter)
@@ -392,7 +404,7 @@ function createDonutChart(data, element) {
         radius = Math.min(width, height) / 2,
         g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
+    var color = d3.scaleOrdinal(["#6b486b", "#7b6888", "#AEC7E8", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#FF9896", "#8a89a6"]);
 
     var pie = d3.pie()
         .sort(null)
@@ -409,16 +421,39 @@ function createDonutChart(data, element) {
     var arc = g.selectAll(".arc")
         .data(pie(data))
         .enter().append("g")
-        .attr("class", "arc");
+        .attr("class", "arc")
+        .style('pointer-events', 'all')
+        .style('cursor', 'pointer');
 
     arc.append("path")
         .attr("d", path)
-        .attr("fill", function (d) { return color(d.data.Arma_empleada); });
+        .attr("fill", function (d, i) { return color(i); });
 
     arc.append("text")
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
-        .attr("dy", "0.1em")
-        .text(function (d) { return d.data.Arma_empleada; });
+        .attr("dy", ".50em")
+        .style("font", "16px sans-serif")
+        .style("color", "white")
+        .text(function (d) {
+            if (d.data.Porcentaje > 10) {
+                return Math.round(d.data.Porcentaje);
+            } else {
+                return '';
+            }
+        });
+
+    d3.selectAll('.arc')
+        .on("mouseover", function (d) {
+            console.log(d);
+            tooltip.text(`${d.data.Arma_empleada}: ${d.data.Conteo}`);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            return tooltip.style("visibility", "hidden");
+        });
 }
 
 function doStep(step) {
