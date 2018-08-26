@@ -16,6 +16,15 @@ let promise_transport = new Promise((resolve, reject) => {
     });
 });
 
+var dataset_weapon;
+
+let promise_weapon = new Promise((resolve, reject) => {
+    d3.csv("/data/weapon.csv", function (data) {
+        dataset_weapon = data;
+        resolve(data);
+    });
+});
+
 function cleanCanvas(element) {
     d3.select(element).html(null);
 }
@@ -338,6 +347,10 @@ function createBarChart(data, element) {
         .attr("height", function (d) { return height - y(d.Conteo); });
 }
 
+function createDonutChart(data, element){
+    
+}
+
 function doStep(step) {
     d3.selectAll('.tooltip').remove();
     switch (step) {
@@ -355,6 +368,11 @@ function doStep(step) {
         case '4':
             promise_transport.then((dataset) => {
                 createBarChart(dataset, this);
+            });
+            break;
+        case '5':
+            promise_weapon.then((dataset) => {
+                createDonutChart(dataset, this);
             });
             break;
         default:
