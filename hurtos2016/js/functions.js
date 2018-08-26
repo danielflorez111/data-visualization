@@ -444,7 +444,6 @@ function createDonutChart(data, element) {
 
     d3.selectAll('.arc')
         .on("mouseover", function (d) {
-            console.log(d);
             tooltip.text(`${d.data.Arma_empleada}: ${d.data.Conteo}`);
             return tooltip.style("visibility", "visible");
         })
