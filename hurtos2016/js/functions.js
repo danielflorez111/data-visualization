@@ -309,9 +309,21 @@ function createBarChart(data, element) {
             .append("svg")
             .attr("width", length)
             .attr("height", length),
-        margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        margin = { top: 20, right: 20, bottom: 70, left: 60 },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
+
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("color", "white")
+        .style("padding", "8px")
+        .style("background-color", "rgba(0, 0, 0, 0.75)")
+        .style("border-radius", "6px")
+        .style("font", "14px sans-serif");
 
     var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
         y = d3.scaleLinear().rangeRound([height, 0]);
@@ -320,16 +332,21 @@ function createBarChart(data, element) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     x.domain(data.map(function (d) { return d.Movil_agresor; }));
-    y.domain([0, d3.max(data, function (d) { return d.Conteo; })]);
+    y.domain([0, 130000]);
 
     g.append("g")
-        .attr("class", "axis axis--x")
+        .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-25)");
 
     g.append("g")
-        .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(100))
+        .attr("class", "y axis")
+        .call(d3.axisLeft(y).ticks(5))
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
@@ -344,7 +361,22 @@ function createBarChart(data, element) {
         .attr("x", function (d) { return x(d.Movil_agresor); })
         .attr("y", function (d) { return y(d.Conteo); })
         .attr("width", x.bandwidth())
-        .attr("height", function (d) { return height - y(d.Conteo); });
+        .attr("height", function (d) { return height - y(d.Conteo); })
+        .style('pointer-events', 'all')
+        .style('cursor', 'pointer');
+
+
+    d3.selectAll('rect')
+        .on("mouseover", function (d) {
+            tooltip.text(`${d.Movil_agresor}: ${d.Conteo}`);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            return tooltip.style("visibility", "hidden");
+        });
 }
 
 function createDonutChart(data, element){
